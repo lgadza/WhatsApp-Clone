@@ -1,0 +1,79 @@
+.react-webcam {
+  position: relative;
+}
+
+.react-webcam video {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.react-webcam canvas {
+  display: none;
+}
+
+.react-webcam-button {
+  position: absolute;
+  bottom: 10px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: #fff;
+  border: none;
+  border-radius: 50%;
+  padding: 10px;
+  cursor: pointer;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.75);
+}
+
+.react-webcam-button:hover {
+  background-color: #f1f1f1;
+}
+/* ********************** */
+.webcam-container {
+  /* position: fixed; */
+  width: 100vh !important;
+  height: 100vh;
+}
+
+.webcam-video {
+  display: block;
+  position: relative;
+}
+
+.webcam-button {
+  position: absolute;
+  /* bottom: 20px; */
+  top: 105%;
+  right: 0;
+  /* transform: translateX(-50%); */
+  padding: 10px;
+  background-color: #fff;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.75);
+  cursor: pointer;
+  z-index: 5;
+}
+.webcam-button-fullscreen {
+  position: absolute;
+  bottom: 155%;
+  /* top: 20px; */
+  right: 0;
+  transform: translateX(1050%);
+  padding: 10px;
+  background-color: #fff;
+  border: none;
+  border-radius: 50%;
+  box-shadow: 0px 0px 4px 0px rgba(0, 0, 0, 0.75);
+  cursor: pointer;
+  z-index: 5;
+}
+.webcam-button-fullscreen:hover {
+  background-color: rgb(32, 44, 51);
+}
+.webcam-button:hover {
+  background-color: rgb(32, 44, 51);
+}

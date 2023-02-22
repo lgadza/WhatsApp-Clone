@@ -1,0 +1,365 @@
+.App {
+  text-align: center;
+}
+
+.App-logo {
+  height: 40vmin;
+  pointer-events: none;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .App-logo {
+    animation: App-logo-spin infinite 20s linear;
+  }
+}
+
+.App-header {
+  background-color: #282c34;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  font-size: calc(10px + 2vmin);
+  color: white;
+}
+
+.App-link {
+  color: #61dafb;
+}
+
+@keyframes App-logo-spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+#tooltip-disabled {
+  width: 15rem;
+}
+.navigation-bar {
+  background-color: rgb(0, 168, 132);
+  color: white;
+  font-weight: 500;
+  height: 30vh;
+}
+body {
+  background-color: black !important;
+}
+.sign-page {
+  background-color: white;
+  position: absolute;
+  top: 20%;
+  border-radius: 3px;
+  left: 0;
+  right: 0;
+}
+.sign-page .h2 {
+  font-weight: lighter;
+}
+.home-page {
+  color: white;
+  height: 100vh;
+}
+.home-page .user-list {
+  height: 100vh;
+  background-color: rgb(17, 27, 33);
+  border-right: 1px solid rgb(42, 57, 66);
+  /* overflow: scroll; */
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+
+.user-bar {
+  background-color: rgb(32, 44, 51);
+  height: 70px;
+  z-index: 3;
+}
+.search-bar input,
+.search-bar input:active,
+.search-bar input:focus {
+  background-color: rgb(32, 44, 51);
+  border: none;
+  color: white;
+}
+.text-bar input,
+.text-bar input:active,
+.text-bar input:focus {
+  background-color: rgb(42, 57, 66);
+  border: none;
+  color: white;
+}
+.nickname-text-bar input,
+.nickname-text-bar input:active,
+.nickname-text-bar input:focus {
+  background-color: rgb(17, 27, 33);
+  border: none;
+  outline: none;
+  box-shadow: none;
+  color: white;
+}
+
+.search-bar {
+  position: relative;
+}
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 25%;
+}
+.user-name {
+  font-weight: bold;
+}
+.messages-notifications {
+  background-color: rgb(0, 168, 132);
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.dropdown {
+  background-color: transparent !important;
+  border: none;
+  box-shadow: none;
+}
+.dropdown-toggle.btn.btn-primary {
+  background-color: transparent !important;
+  border: none;
+  box-shadow: none;
+  outline: none !important;
+}
+
+.dropdown-menu.show {
+  background-color: rgb(32, 44, 51);
+  width: 20vw;
+}
+.dropdown-item {
+  color: white !important;
+}
+.dropdown-item:hover {
+  background-color: rgb(24, 34, 41) !important;
+}
+.dropdown-toggle.btn.btn-primary:focus,
+.dropdown-toggle.btn.btn-primary:hover,
+.dropdown-toggle.btn.btn-primary:active {
+  background-color: transparent !important;
+  border: none !important ;
+  box-shadow: none !important;
+  outline: none;
+}
+.dropdown-toggle.btn.btn-primary:focus {
+  background-color: rgb(55, 66, 72) !important;
+  border-radius: 50%;
+}
+.user-bar .dropdown {
+  width: fit-content !important;
+}
+.dropdown-toggle::after {
+  display: none !important;
+  background-color: transparent !important;
+}
+.user-bar-stick {
+  position: sticky;
+  top: 0;
+  background-color: rgb(17, 27, 33);
+}
+.chat-list-bar:hover {
+  background-color: rgb(32, 44, 51);
+}
+.main-chat-messages {
+  height: 100vh !important;
+  background-image: url("https://about.me/cdn-cgi/image/q=80,dpr=1,f=auto,fit=cover,w=1200,h=630,gravity=auto/https://assets.about.me/background/users/w/h/a/whatsappstatus_1406877911_28.jpg");
+  overflow-x: hidden;
+  overflow-y: scroll;
+}
+.main-chat-messages .user-bar.profile {
+  position: sticky;
+  top: 0;
+}
+.search-messages {
+  background-color: rgb(17, 27, 33);
+  height: 100vh;
+  position: fixed;
+  width: 66.667%;
+  top: 0;
+  right: 0;
+  transform: translateX(100%);
+  transition: transform 0.3s ease-in-out;
+}
+.my-profile {
+  background-color: rgb(17, 27, 33);
+  height: 100vh;
+  position: fixed;
+  width: 33.333%;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  transform: translateX(-100%);
+  transition: transform 0.3s ease-in-out;
+}
+.my-profile.show {
+  transform: translateX(0);
+  /* display: block; */
+}
+.search-messages.show {
+  transform: translateX(0);
+}
+.chat {
+  background-color: rgb(32, 44, 51);
+  width: fit-content;
+  border-radius: 5px;
+  /* overflow: hidden; */
+}
+.text-options {
+  transform: translateX(200%);
+  height: 0px;
+  width: 0px;
+  transition: transform 0.1s ease-in;
+  visibility: hidden;
+}
+.chat:hover .text-options {
+  transform: translateX(-230%);
+  visibility: visible;
+}
+.my-chat {
+  background-color: rgb(0, 92, 75);
+  width: fit-content;
+  border-radius: 5px;
+  margin-right: auto;
+}
+.text-time {
+  font-size: 0.8rem;
+}
+.user-bar.text-input {
+  position: fixed;
+  bottom: 0;
+  right: 0;
+  width: 66.667%;
+}
+.space-between {
+  margin-bottom: 95px;
+}
+.clip-files {
+  position: relative;
+}
+.files {
+  position: absolute;
+  bottom: 70px;
+  left: -10px;
+}
+.clip-contact {
+  width: 50px;
+  height: 50px;
+  background-color: rgb(7, 149, 220);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.clip-file {
+  width: 50px;
+  height: 50px;
+  background-color: rgb(95, 102, 205);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.clip-camera {
+  width: 50px;
+  height: 50px;
+  background-color: rgb(236, 64, 122);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.clip-image {
+  width: 50px;
+  height: 50px;
+  background-color: rgb(172, 68, 207);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.home-page .user-list::-webkit-scrollbar {
+  width: 4px;
+}
+
+.home-page .user-list::-webkit-scrollbar-track {
+  background-color: rgb(17, 27, 33);
+}
+
+.home-page .user-list::-webkit-scrollbar-thumb {
+  background-color: rgb(55, 64, 69);
+  border-radius: 5px;
+}
+
+.home-page .user-list::-webkit-scrollbar-thumb:hover {
+  background-color: #555;
+}
+.profile-picture {
+  position: relative;
+}
+.align-items-center.change-profile {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(17, 27, 33, 0.5);
+  visibility: hidden;
+}
+.flex-column.align-items-center.change-profile:hover {
+  visibility: visible !important;
+}
+.profile-picture:hover .flex-column.align-items-center.change-profile {
+  visibility: visible !important;
+}
+.user-profile-name {
+  background-color: rgb(6, 207, 156);
+  height: 1.5px;
+}
+.blue-tick {
+  position: relative;
+}
+.text-options {
+  position: absolute;
+  top: -8px;
+  left: 0;
+  padding: 3px;
+  z-index: 2;
+}
+.text-time .dropdown-toggle.btn.btn-primary:focus {
+  /* background-color: rgb(55, 66, 72) !important; */
+  border-radius: 50%;
+  background-image: linear-gradient(
+    rgb(32, 44, 51),
+    rgb(32, 44, 51),
+    rgb(32, 44, 51),
+    rgb(32, 44, 51),
+    transparent
+  );
+}
+.text-options-arrow {
+  background-image: linear-gradient(
+    rgb(32, 44, 51),
+    rgb(32, 44, 51),
+    rgb(32, 44, 51),
+    transparent
+  );
+}
+.chat-closed {
+  height: 100vh;
+  background-color: rgb(34, 46, 53);
+}
+.settings-bar {
+  display: flex;
+  flex: 1 4;
+}
