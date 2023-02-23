@@ -9,14 +9,16 @@ import { persistReducer, persistStore } from "redux-persist";
 import { encryptTransform } from "redux-persist-transform-encrypt";
 import signInToken from "../reducers/login.js";
 import userChat from "../reducers/userChat";
-import tournaments from "../reducers/getTournaments";
+import messages from "../reducers/getAllChatMessages";
 import userPreference from "../reducers/userPreference";
 import userData from "../reducers/userData";
 import users from "../reducers/usersReducer.js";
-import postTournament from "../reducers/postTournament";
+import postMessages from "../reducers/postMessage";
 import registerUser from "../reducers/registerUser";
 import getMe from "../reducers/meReducer";
 import adminSignInToken from "../reducers/adminLogin";
+import createChat from "../reducers/createChat";
+
 const persistConfig = {
   key: "root",
   storage: localStorage,
@@ -26,19 +28,19 @@ const persistConfig = {
     }),
   ],
 };
-
 const bigReducer = combineReducers({
   giftData: giftData,
   accessToken: signInToken,
   userChat: userChat,
-  tournaments: tournaments,
+  messages: messages,
   preference: userPreference,
   userData: userData,
   users: users,
-  tournament: postTournament,
+  message: postMessages,
   registerUser: registerUser,
   me: getMe,
   adminToken: adminSignInToken,
+  createdChat: createChat,
 });
 
 const persistedReducer = persistReducer(persistConfig, bigReducer);

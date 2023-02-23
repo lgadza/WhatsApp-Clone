@@ -4,9 +4,20 @@ import { Form, Dropdown } from "react-bootstrap";
 import WebCam from "./WebCam";
 import { useState } from "react";
 import { Link } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { deleteMessage, postMessage } from "../redux/actions";
 
-const ChatRoom = ({ handleSearch, handleClosedChat, chat }) => {
+const ChatRoom = ({
+  senderName,
+  handleSearch,
+  handleClosedChat,
+  chat,
+  accessToken,
+}) => {
+  const dispatch = useDispatch();
   const [isCamera, setIsCamera] = useState(false);
+  const [message, setMessage] = useState("");
+  const [files, setFiles] = useState("");
   const handleCamera = () =>
     isCamera ? setIsCamera(false) : setIsCamera(true);
   const [isClipping, setIsClipping] = useState(false);
@@ -15,6 +26,17 @@ const ChatRoom = ({ handleSearch, handleClosedChat, chat }) => {
   };
   const handleChat = () => {
     handleClosedChat();
+  };
+  const content = {
+    sender: senderName,
+    content: {
+      text: message,
+      media: files,
+    },
+  };
+  const chatData = {
+    members: chat._id,
+    messages: "not ssure",
   };
   return (
     <div>
@@ -75,7 +97,14 @@ const ChatRoom = ({ handleSearch, handleClosedChat, chat }) => {
                     <Dropdown.Item className="py-3">
                       Forward message
                     </Dropdown.Item>
-                    <Dropdown.Item className="py-3">
+                    <Dropdown.Item
+                      onClick={() => {
+                        dispatch(
+                          deleteMessage(chat._id, (text = "2323"), accessToken)
+                        );
+                      }}
+                      className="py-3"
+                    >
                       Delete message
                     </Dropdown.Item>
                     <Dropdown.Item className="py-3">Report</Dropdown.Item>
@@ -153,12 +182,26 @@ const ChatRoom = ({ handleSearch, handleClosedChat, chat }) => {
           </div>{" "}
         </div>
 
-        <Form.Group className="mb-2 w-100 mx-4  text-bar mt-2 ">
+        <Form.Group className="mb-2 w-100 mx-4 text-send-bar text-bar mt-2 ">
           <Form.Control
             type="text"
-            placeholder="Type a meesage"
-            className="pl-5"
+            placeholder="Type a message"
+            className="pl-2"
+            value={message}
+            onChange={(e) => {
+              setMessage(e.target.value);
+            }}
           />
+          {message && (
+            <Icon.Send
+              onClick={() => {
+                dispatch(postMessage(content, accessToken, chat._id));
+                setMessage("");
+              }}
+              className="send-icon p-1"
+              size={25}
+            />
+          )}
         </Form.Group>
 
         <div className="d-flex align-items-center">

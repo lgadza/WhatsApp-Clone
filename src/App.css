@@ -383,6 +383,17 @@ body {
   border-radius: 0;
   background-color: transparent !important;
 }
+.text-send-bar {
+  position: relative;
+}
+.send-icon {
+  position: absolute;
+  right: 2%;
+  top: 20%;
+  background-color: rgb(32, 44, 51);
+  border-radius: 5px;
+}
+
 /* *************************Settings */
 .settings-bar {
   display: flex;
