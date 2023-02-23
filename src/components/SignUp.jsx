@@ -3,6 +3,9 @@ import { Link } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
 import * as Icon from "react-bootstrap-icons";
+import { getMe, registerUser } from "../redux/actions";
+import Spinners from "./Spinner";
+import { useNavigate } from "react-router-dom";
 const SignUp = ({ signIn }) => {
   // ***************** States****************
   const [isSignIn, setIsSignIn] = useState(false);
@@ -13,8 +16,21 @@ const SignUp = ({ signIn }) => {
   const [email, setEmail] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [response, setResponse] = useState(false);
-
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  // ********************Selectors***************
+  const registrationResponse = useSelector(
+    (state) => state.registerUser.registrationResponse
+  );
+
+  const isLoading = useSelector((state) => state.registerUser.isLoading);
+  const isError = useSelector((state) => state.registerUser.isError);
+  const registerData = {
+    name: name,
+    surname: surname,
+    email: email,
+    password: password,
+  };
 
   // ***********Event Handlers*******************
   const handleName = (e) => {
@@ -34,21 +50,11 @@ const SignUp = ({ signIn }) => {
   };
   const handleUserData = async () => {
     setSignUp(true);
-    // await dispatch(registerUser(registerData));
-    setResponse(true);
-  };
-  // ********************Selectors***************
-  const registrationResponse = useSelector(
-    (state) => state.registerUser.registrationResponse
-  );
-  const accessToken = useSelector((state) => state.accessToken.accessToken);
-  const isLoading = useSelector((state) => state.registerUser.isLoading);
-  const isError = useSelector((state) => state.registerUser.isError);
-  const registerData = {
-    name: name,
-    surname: surname,
-    email: email,
-    password: password,
+    await dispatch(registerUser(registerData));
+    await setResponse(true);
+
+    await dispatch(getMe(registrationResponse.accessToken));
+    navigate("/chats");
   };
 
   return (
@@ -63,32 +69,31 @@ const SignUp = ({ signIn }) => {
           Password and Confirm Password do not match
         </Alert>
       )}
-      {/* //TODO**********************************DO NOT DELETE ME */}
-      {/* {isLoading && signUp && (
-            <div className="  d-flex justify-content-center">
-              {" "}
-              <Spinner />
-            </div>
-          )} */}
-      {/* {isError && (
-            <Alert variant="danger" className="mt-5">
-              <Alert.Heading>!You got an error!</Alert.Heading>
-              <p>
-                Something went wrong on our side, we are working on it, we
-                apologies for the inconvenience caused
-              </p>
-            </Alert>
-          )} */}
-      {/* {response && (
-            <Alert variant="primary">{registrationResponse.message}</Alert>
-          )} */}
-      {/* **********************************DO NOT DELETE ME */}
+
+      {isLoading && signUp && (
+        <div className="  d-flex justify-content-center">
+          {" "}
+          <Spinners />
+        </div>
+      )}
+      {isError && (
+        <Alert variant="danger" className="mt-5">
+          <Alert.Heading>!You got an error!</Alert.Heading>
+          <p>
+            Something went wrong on our side, we are working on it, we apologies
+            for the inconvenience caused
+          </p>
+        </Alert>
+      )}
+      {response && (
+        <Alert variant="primary">{registrationResponse.message}</Alert>
+      )}
+
       <Form.Group className="d-flex mb-4 ">
         <Col className="pl-0">
           <Form.Control
             placeholder="First name"
             required
-            // onInput={handleChange}
             onInput={handleName}
           />
         </Col>
@@ -96,7 +101,6 @@ const SignUp = ({ signIn }) => {
           <Form.Control
             placeholder="Last name"
             required
-            // onInput={handleChange}
             onInput={handleSurname}
           />
         </Col>

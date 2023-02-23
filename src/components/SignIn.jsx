@@ -10,10 +10,9 @@ import {
 import { Link, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { useState, useEffect } from "react";
-// import { logInData, signIn } from "../../redux/actions";
+import { signIn, getMe } from "../redux/actions/index";
 import * as Icon from "react-bootstrap-icons";
-// import Spinner from "../../components/Spinner";
-// import { getMe } from "../../redux/actions";
+import Spinners from "../components/Spinner";
 
 const SignIn = ({ signUp }) => {
   const dispatch = useDispatch();
@@ -41,43 +40,36 @@ const SignIn = ({ signUp }) => {
     password: password,
   };
   const handleSignIn = async () => {
-    // const token = await dispatch(signIn(loginFormData));
+    await dispatch(signIn(loginFormData));
     setSign_in(true);
   };
   if (signInCredentials.accessToken) {
-    // dispatch(getMe(signInCredentials.accessToken));
-    // setTimeout(() => {
-    // navigate("/user-page");
-    // }, 500);
+    dispatch(getMe(signInCredentials.accessToken));
+
     if (!isGetMeLoading) {
-      navigate("/user-page");
+      navigate("/chats");
     }
   }
   return (
     <>
       <span className="d-flex my-5 h2">Sign In</span>
 
-      {/* {isLoading && sign_in ? (
-            <div className="  d-flex justify-content-center">
-              {" "}
-              <Spinner />
-            </div>
-          ) : isGetMeLoading && sign_in ? (
-            <div className="  d-flex justify-content-center">
-              {" "}
-              <Spinner />
-            </div>
-          ) : null}
-          {isError && sign_in && (
-            <Alert variant="danger">
-              The email or password you provided is incorrect
-            </Alert>
-          )} */}
-
-      {/* //TODO do not delete me I am the registration confirmation */}
-      {/* <Alert variant="success">
-                Account verification has been successfully completed
-              </Alert> */}
+      {isLoading && sign_in ? (
+        <div className="  d-flex justify-content-center">
+          {" "}
+          <Spinners />
+        </div>
+      ) : isGetMeLoading && sign_in ? (
+        <div className="  d-flex justify-content-center">
+          {" "}
+          <Spinners />
+        </div>
+      ) : null}
+      {isError && sign_in && (
+        <Alert variant="danger">
+          The email or password you provided is incorrect
+        </Alert>
+      )}
 
       <Form.Group className="d-flex mb-4">
         <Col className="pl-0">
@@ -101,7 +93,7 @@ const SignIn = ({ signUp }) => {
         </Col>
       </Form.Group>
       <Col className=" mb-3 pl-0 ">
-        <Link to="/chats" className="w-100">
+        <Link className="w-100">
           <Button
             disabled={!email || !password}
             className="px-4 w-100"

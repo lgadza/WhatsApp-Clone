@@ -1,17 +1,26 @@
 import { Col, Container, Form, Dropdown, Row } from "react-bootstrap";
 import Avatar from "../components/Avatar";
 import * as Icon from "react-bootstrap-icons";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import WebCam from "../components/WebCam";
 import ChatRoom from "../components/ChatRoom";
 import SearchChatsResults from "../components/SearchChatsResults";
 import ClosedChat from "../components/ClosedChat";
 import MySettings from "../components/MySettings";
+import { useDispatch, useSelector } from "react-redux";
+import { deleteUser, getMe, getUsers } from "../redux/actions";
 
 const HomePage = () => {
+  const Me = useSelector((state) => state.me.me);
+  const dispatch = useDispatch();
+  const users = useSelector((state) => state.users.users);
+  const registrationResponse = useSelector(
+    (state) => state.registerUser.registrationResponse
+  );
   // ****************STATES*****************
-  const [name, setName] = useState("Louis");
+  const [name, setName] = useState(Me.name);
+  const [userId, setUserId] = useState("");
   const [about, setAbout] = useState("Eagle all the way");
   const [isSearch, setIsSearch] = useState(false);
   const [isCamera, setIsCamera] = useState(false);
@@ -22,6 +31,7 @@ const HomePage = () => {
   const [isClipping, setIsClipping] = useState(false);
 
   // ****************STATE HANDLES*****************
+  // ****************STATE HANDLES*****************
   const handleSearch = () => {
     setIsSearch(true);
   };
@@ -29,11 +39,20 @@ const HomePage = () => {
     setIsChatClosed(true);
   };
 
-  const handleCamera = () =>
-    isCamera ? setIsCamera(false) : setIsCamera(true);
-  const handleClipping = () => {
-    isClipping ? setIsClipping(false) : setIsClipping(true);
+  const handleDeleteUser = () => {
+    dispatch(deleteUser(userId, registrationResponse.accessToken));
   };
+  // const handleCamera = () =>
+  //   isCamera ? setIsCamera(false) : setIsCamera(true);
+  // const handleClipping = () => {
+  //   isClipping ? setIsClipping(false) : setIsClipping(true);
+  // };
+  useEffect(() => {
+    dispatch(getUsers(registrationResponse.accessToken));
+    dispatch(getMe(registrationResponse.accessToken));
+  }, []);
+  // console.log(registrationResponse.accessToken);
+  console.log("I am Id", userId);
 
   return (
     <Container fluid className="home-page">
@@ -81,44 +100,72 @@ const HomePage = () => {
                   <Icon.Search size={20} className="search-icon" />
                 </Form.Group>
               </div>
-              {[...Array(15)].map((user, index) => {
-                return (
-                  <div
-                    onClick={() => setIsChatClosed(false)}
-                    key={index}
-                    className="chat-list-bar d-flex justify-content-between py-2 px-3"
-                  >
-                    <div className="d-flex">
-                      <Avatar
-                        src={
-                          "https://www.maxpixel.net/static/photo/640/Icon-Avatar-Person-Business-Male-Profile-User-5359553.png"
-                        }
-                        width={50}
-                        height={50}
-                        alt="me"
-                      />
-                      <div className="ml-4">
-                        <div className="d-flex user-name">Steve</div>
-                        <div className="d-flex">
-                          <span className="ml-1">
-                            <Icon.CheckAll
-                              size={20}
-                              color="rgb(83, 189, 235)"
-                            />
-                          </span>
-                          <span>Hey man</span>
+              {users.length > 0 &&
+                users.map((user, index) => {
+                  return (
+                    <div
+                      onClick={() => setIsChatClosed(false)}
+                      key={index}
+                      className="chat-list-bar d-flex justify-content-between py-2 px-3"
+                    >
+                      <div className="d-flex">
+                        <Avatar
+                          src={
+                            "https://www.maxpixel.net/static/photo/640/Icon-Avatar-Person-Business-Male-Profile-User-5359553.png"
+                          }
+                          width={50}
+                          height={50}
+                          alt="me"
+                        />
+                        <div className="ml-4">
+                          <div className="d-flex user-name">{user.name}</div>
+                          <div className="d-flex">
+                            <span className="ml-1">
+                              <Icon.CheckAll
+                                size={20}
+                                color="rgb(83, 189, 235)"
+                              />
+                            </span>
+                            <span>Hey man</span>
+                          </div>
+                        </div>
+                      </div>
+                      <div className="ml-3 text-time">
+                        <div className="mr-auto">Yesterday</div>
+                        <div>
+                          <div className="messages-notifications">24</div>
+
+                          <Dropdown className="text-option">
+                            <Dropdown.Toggle>
+                              <Icon.CaretDown
+                                onClick={() => {
+                                  setUserId(user._id);
+                                }}
+                                size={20}
+                              />
+                            </Dropdown.Toggle>
+
+                            <Dropdown.Menu>
+                              <Dropdown.Item className="py-3">
+                                Archive
+                              </Dropdown.Item>
+
+                              <Dropdown.Item className="py-3">
+                                Pin chat
+                              </Dropdown.Item>
+                              <Dropdown.Item
+                                onClick={handleDeleteUser}
+                                className="py-3"
+                              >
+                                Delete chat
+                              </Dropdown.Item>
+                            </Dropdown.Menu>
+                          </Dropdown>
                         </div>
                       </div>
                     </div>
-                    <div className="ml-3">
-                      <div>
-                        <div className="mr-auto">Yesterday</div>
-                        <div className="messages-notifications">24</div>
-                      </div>
-                    </div>
-                  </div>
-                );
-              })}
+                  );
+                })}
               {/* <MySettings /> */}
             </div>
           )}
@@ -420,7 +467,7 @@ const HomePage = () => {
               <Icon.Search size={20} className="search-icon" />
             </Form.Group>
             <div className="mt-5">
-              <span>Search for messages with Louis </span>
+              <span>Search for messages with {Me.name} </span>
             </div>
           </div>
           {/* <SearchChatsResults /> */}

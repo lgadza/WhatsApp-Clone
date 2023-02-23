@@ -136,6 +136,7 @@ body {
 .dropdown-menu.show {
   background-color: rgb(32, 44, 51);
   width: 20vw;
+  z-index: 3 !important;
 }
 .dropdown-item {
   color: white !important;
@@ -363,3 +364,59 @@ body {
   display: flex;
   flex: 1 4;
 }
+.chat-list-bar .text-time {
+  position: relative;
+}
+.chat-list-bar .text-option {
+  position: absolute;
+  top: 20%;
+  right: -20%;
+  transform: translateX(115%);
+  transition: 0.01s ease-in;
+  background-color: transparent;
+  z-index: 3;
+}
+.chat-list-bar:hover .text-option {
+  transform: translateX(0);
+}
+.chat-list-bar .text-time .dropdown-toggle.btn.btn-primary:focus {
+  border-radius: 0;
+  background-color: transparent !important;
+}
+/* *************************Settings */
+.settings-bar {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+}
+
+.photoSection {
+  padding-top: 20px;
+  padding-left: 13px;
+}
+
+.moreSettings {
+  display: flex;
+  width: 100%;
+  padding-left: 40px;
+  padding-top: 20px;
+  padding-bottom: 20px;
+  flex-wrap: nowrap;
+  align-items: center;
+  border-bottom: 1px solid rgba(41, 41, 41, 0.952);
+}
+
+.flex {
+  align-self: flex-start;
+}
+
+.moreSettings:hover,
+.photoSection:hover {
+  background-color: rgb(32, 44, 51);
+}
+
+.pointer {
+  cursor: pointer;
+}
+
+/* *************************Settings */
