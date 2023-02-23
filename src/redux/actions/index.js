@@ -43,52 +43,6 @@ export const USER_PREFERENCE_DATA_LOADING = " USER_PREFERENCE_DATA_LOADING";
 export const USER_DATA_ERROR = " USER_DATA_ERROR";
 export const USER_DATA_LOADING = " USER_DATA_LOADING";
 
-// export const getUsers = () => {
-//   return async (dispatch) => {
-//     const options = {
-//       method: "GET",
-//     };
-//     const URL = process.cwd.REACT_APP_BE_DEV_URL;
-//     try {
-//       const response = fetch(`http://localhost:3001/users`, options);
-//       console.log("I AM THE CALLER");
-//       if (response.ok) {
-//         const users = await response.json();
-//         dispatch({
-//           type: GET_USERS,
-//           payload: users,
-//         });
-//         setTimeout(() => {
-//           dispatch({
-//             type: GET_USERS_LOADING,
-//             payload: false,
-//           });
-//         }, 100);
-//       } else {
-//         console.log("error");
-//         dispatch({
-//           type: GET_USERS_LOADING,
-//           payload: false,
-//         });
-
-//         dispatch({
-//           type: GET_USERS_ERROR,
-//           payload: true,
-//         });
-//       }
-//     } catch (error) {
-//       console.log(error);
-//       dispatch({
-//         type: GET_USERS_LOADING,
-//         payload: false,
-//       });
-//       dispatch({
-//         type: GET_USERS_ERROR,
-//         payload: true,
-//       });
-//     }
-//   };
-// };
 export const registerUser = (userData) => {
   return async (dispatch) => {
     const options = {
@@ -99,7 +53,7 @@ export const registerUser = (userData) => {
       },
       body: JSON.stringify(userData),
     };
-    const URL = process.env.REACT_APP_BE_PROD_URL;
+    const URL = process.env.REACT_APP_BE_DEV_URL;
     try {
       let response = await fetch(`${URL}/users/register`, options);
       if (response.ok) {
@@ -168,7 +122,7 @@ export const createTournament = (data) => {
     }
   };
 };
-export const editTournament = (data, tournamentId) => {
+export const editChat = (data, chatId) => {
   return async (dispatch) => {
     const options = {
       method: "PUT",
@@ -180,14 +134,8 @@ export const editTournament = (data, tournamentId) => {
     };
     const URL = process.env.REACT_APP_BE_PROD_URL;
     try {
-      const response = await fetch(
-        `${URL}/tournaments/${tournamentId}`,
-        options
-      );
+      const response = await fetch(`${URL}/chats/me/${chatId}`, options);
       if (response.ok) {
-        // const tournament = await response.json();
-        // getUsers(`${URL}/users?limit=10`);
-        getTournaments();
       }
     } catch (error) {
       console.log(error);
@@ -204,7 +152,7 @@ export const signIn = (data) => {
       },
       body: JSON.stringify(data),
     };
-    const URL = process.env.REACT_APP_BE_PROD_URL;
+    const URL = process.env.REACT_APP_BE_DEV_URL;
     try {
       const response = await fetch(`${URL}/users/login`, options);
       if (response.ok) {
@@ -291,53 +239,6 @@ export const logout = (userId) => {
     }
   };
 };
-export const adminLogout = (userId) => {
-  return async (dispatch) => {
-    const options = {
-      method: "GET",
-    };
-    const URL = process.env.REACT_APP_BE_PROD_URL;
-    try {
-      const response = await fetch(`${URL}/users/logout/${userId}`, options);
-      if (response.ok) {
-        const accessToken = await response.json();
-        dispatch({
-          type: GET_ADMIN_LOGIN_ACCESSTOKEN,
-          payload: accessToken,
-        });
-        setTimeout(() => {
-          dispatch({
-            type: GET_ADMIN_LOGIN_ACCESSTOKEN_LOADING,
-            payload: false,
-          });
-        }, 100);
-      } else {
-        console.log("error");
-
-        dispatch({
-          type: GET_ADMIN_LOGIN_ACCESSTOKEN_LOADING,
-          payload: false,
-        });
-        dispatch({
-          type: GET_ADMIN_LOGIN_ACCESSTOKEN_ERROR,
-          payload: true,
-        });
-      }
-    } catch (error) {
-      console.log(error);
-      dispatch({
-        type: GET_ADMIN_LOGIN_ACCESSTOKEN_LOADING,
-        payload: false,
-      });
-
-      dispatch({
-        type: GET_ADMIN_LOGIN_ACCESSTOKEN_ERROR,
-        payload: true,
-      });
-    }
-  };
-};
-
 export const adminSignIn = (data) => {
   return async (dispatch) => {
     const options = {
@@ -416,17 +317,20 @@ export const registerTournament = (data, tournamentId) => {
     }
   };
 };
-export const deleteTournament = (id) => {
+export const deleteUser = (id, accessToken) => {
   return async () => {
     const options = {
       method: "DELETE",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     };
-    const URL = process.env.REACT_APP_BE_PROD_URL;
+    const URL = process.env.REACT_APP_BE_DEV_URL;
     try {
-      const response = await fetch(`${URL}/tournaments/${id}`, options);
+      const response = await fetch(`${URL}/users/${id}`, options);
       console.log(response.ok);
       if (response.ok || response === 204) {
-        getTournaments();
+        getUsers();
       }
     } catch (error) {
       console.log(error);
@@ -487,6 +391,9 @@ export const getUsers = (accessToken) => {
     const URL = process.env.REACT_APP_BE_DEV_URL;
     const options = {
       method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
     };
 
     try {
@@ -540,7 +447,7 @@ export const getMe = (accessToken) => {
         Authorization: "Bearer " + `${accessToken}`,
       },
     };
-    const URL = process.env.REACT_APP_BE_PROD_URL;
+    const URL = process.env.REACT_APP_BE_DEV_URL;
 
     try {
       let response = await fetch(`${URL}/users/me`, options);
@@ -582,36 +489,5 @@ export const getMe = (accessToken) => {
         payload: true,
       });
     }
-  };
-};
-export const giftCardInf = (data) => {
-  return {
-    type: GIFT_CARD_DATA,
-    payload: data,
-  };
-};
-export const logInData = (data) => {
-  return {
-    type: LOG_IN_DATA,
-    payload: data,
-  };
-};
-export const userChat = (data) => {
-  return {
-    type: USER_CHAT_DATA,
-    payload: data,
-  };
-};
-
-export const userPreference = (data) => {
-  return {
-    type: USER_PREFERENCE_DATA,
-    payload: data,
-  };
-};
-export const userData = (data) => {
-  return {
-    type: USER_PREFERENCE_DATA,
-    payload: data,
   };
 };
