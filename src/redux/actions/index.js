@@ -193,50 +193,18 @@ export const signIn = (data) => {
     }
   };
 };
-export const logout = (userId) => {
-  return async (dispatch) => {
-    const options = {
-      method: "GET",
-    };
-    const URL = process.env.REACT_APP_BE_PROD_URL;
-    try {
-      const response = await fetch(`${URL}/users/logout/${userId}`, options);
-      if (response.ok) {
-        const accessToken = await response.json();
-        dispatch({
-          type: GET_LOGIN_ACCESSTOKEN,
-          payload: accessToken,
-        });
-        setTimeout(() => {
-          dispatch({
-            type: GET_LOGIN_ACCESSTOKEN_LOADING,
-            payload: false,
-          });
-        }, 100);
-      } else {
-        console.log("error");
-
-        dispatch({
-          type: GET_LOGIN_ACCESSTOKEN_LOADING,
-          payload: false,
-        });
-        dispatch({
-          type: GET_LOGIN_ACCESSTOKEN_ERROR,
-          payload: true,
-        });
-      }
-    } catch (error) {
-      console.log(error);
+export const logout = () => {
+  return (dispatch) => {
+    dispatch({
+      type: GET_LOGIN_ACCESSTOKEN,
+      payload: "",
+    });
+    setTimeout(() => {
       dispatch({
         type: GET_LOGIN_ACCESSTOKEN_LOADING,
         payload: false,
       });
-
-      dispatch({
-        type: GET_LOGIN_ACCESSTOKEN_ERROR,
-        payload: true,
-      });
-    }
+    }, 100);
   };
 };
 export const adminSignIn = (data) => {

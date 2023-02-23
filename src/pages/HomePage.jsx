@@ -2,14 +2,14 @@ import { Col, Container, Form, Dropdown, Row } from "react-bootstrap";
 import Avatar from "../components/Avatar";
 import * as Icon from "react-bootstrap-icons";
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import WebCam from "../components/WebCam";
 import ChatRoom from "../components/ChatRoom";
 import SearchChatsResults from "../components/SearchChatsResults";
 import ClosedChat from "../components/ClosedChat";
 import MySettings from "../components/MySettings";
 import { useDispatch, useSelector } from "react-redux";
-import { deleteUser, getMe, getUsers } from "../redux/actions";
+import { deleteUser, getMe, getUsers, logout } from "../redux/actions";
 
 const HomePage = () => {
   const Me = useSelector((state) => state.me.me);
@@ -18,8 +18,9 @@ const HomePage = () => {
   const registrationResponse = useSelector(
     (state) => state.registerUser.registrationResponse
   );
+  const accessToken = useSelector((state) => state.accessToken.accessToken);
   const users = allChats.filter((chat) => chat._id !== Me._id);
-
+  const navigate = useNavigate();
   // ****************STATES*****************
   const [name, setName] = useState(Me.name);
   const [userId, setUserId] = useState("");
@@ -48,10 +49,13 @@ const HomePage = () => {
   const handleDeleteUser = () => {
     dispatch(deleteUser(userId, registrationResponse.accessToken));
   };
-
+  const handleLogout = async () => {
+    await dispatch(logout());
+    navigate("/");
+  };
   useEffect(() => {
-    dispatch(getUsers(registrationResponse.accessToken));
-    dispatch(getMe(registrationResponse.accessToken));
+    dispatch(getUsers(registrationResponse.accessToken || accessToken));
+    dispatch(getMe(registrationResponse.accessToken || accessToken));
   }, []);
   console.log("I am Id", userId);
 
@@ -87,7 +91,9 @@ const HomePage = () => {
                         <Dropdown.Item onClick={() => setIsSettings(true)}>
                           Settings
                         </Dropdown.Item>
-                        <Dropdown.Item href="#/action-3">Log out</Dropdown.Item>
+                        <Dropdown.Item onClick={handleLogout}>
+                          Log out
+                        </Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
                   </div>
