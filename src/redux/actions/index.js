@@ -463,7 +463,6 @@ export const getMe = (accessToken) => {
             payload: false,
           });
         }, 100);
-        // window.location.href = "/user-page";
       } else {
         console.log("error");
 

@@ -1,11 +1,11 @@
 import * as Icon from "react-bootstrap-icons";
 import Avatar from "./Avatar";
 
-const MySettings = () => {
+const MySettings = ({ isSettings, user }) => {
   return (
     <div className="pointer">
       <div className="user-bar d-flex  py-3 px-3 align-items-center">
-        <Icon.ArrowLeft size={30} />
+        <Icon.ArrowLeft onClick={() => isSettings()} size={30} />
         <span className="ml-5">Settings</span>
       </div>
       <div>
@@ -19,7 +19,7 @@ const MySettings = () => {
             alt="me"
           />
           <div className="d-flex flex-column  ml-3 justify-content-center align-items-center">
-            <span className="flex">Mr man</span>
+            <span className="flex">{user.name}</span>
             <span className="flex">About</span>
           </div>
         </div>

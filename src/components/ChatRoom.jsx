@@ -5,7 +5,7 @@ import WebCam from "./WebCam";
 import { useState } from "react";
 import { Link } from "react-router-dom";
 
-const ChatRoom = ({ handleSearch, handleClosedChat }) => {
+const ChatRoom = ({ handleSearch, handleClosedChat, chat }) => {
   const [isCamera, setIsCamera] = useState(false);
   const handleCamera = () =>
     isCamera ? setIsCamera(false) : setIsCamera(true);
@@ -28,7 +28,7 @@ const ChatRoom = ({ handleSearch, handleClosedChat }) => {
             height={50}
             alt="me"
           />
-          <span className="ml-3 user-name">Louis Gadza</span>
+          <span className="ml-3 user-name">{chat.name}</span>
         </div>
         <div className="d-flex align-items-center">
           <Icon.Search

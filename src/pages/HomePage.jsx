@@ -14,15 +14,19 @@ import { deleteUser, getMe, getUsers } from "../redux/actions";
 const HomePage = () => {
   const Me = useSelector((state) => state.me.me);
   const dispatch = useDispatch();
-  const users = useSelector((state) => state.users.users);
+  const allChats = useSelector((state) => state.users.users);
   const registrationResponse = useSelector(
     (state) => state.registerUser.registrationResponse
   );
+  const users = allChats.filter((chat) => chat._id !== Me._id);
+
   // ****************STATES*****************
   const [name, setName] = useState(Me.name);
   const [userId, setUserId] = useState("");
+  const [openChat, setOpenChat] = useState("");
   const [about, setAbout] = useState("Eagle all the way");
   const [isSearch, setIsSearch] = useState(false);
+  const [isSettings, setIsSettings] = useState(false);
   const [isCamera, setIsCamera] = useState(false);
   const [isProfile, setIsProfile] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
@@ -38,27 +42,24 @@ const HomePage = () => {
   const handleClosedChat = () => {
     setIsChatClosed(true);
   };
-
+  const handleSettings = () => {
+    setIsSettings(false);
+  };
   const handleDeleteUser = () => {
     dispatch(deleteUser(userId, registrationResponse.accessToken));
   };
-  // const handleCamera = () =>
-  //   isCamera ? setIsCamera(false) : setIsCamera(true);
-  // const handleClipping = () => {
-  //   isClipping ? setIsClipping(false) : setIsClipping(true);
-  // };
+
   useEffect(() => {
     dispatch(getUsers(registrationResponse.accessToken));
     dispatch(getMe(registrationResponse.accessToken));
   }, []);
-  // console.log(registrationResponse.accessToken);
   console.log("I am Id", userId);
 
   return (
     <Container fluid className="home-page">
       <Row>
         <Col md={4} className="user-list px-0">
-          {!isProfile && (
+          {!isProfile && !isSettings && (
             <div>
               <div className="user-bar-stick pb-2">
                 <div className="user-bar d-flex justify-content-between py-3 px-3 align-items-center">
@@ -83,7 +84,9 @@ const HomePage = () => {
 
                       <Dropdown.Menu>
                         <Dropdown.Item>New group</Dropdown.Item>
-                        <Dropdown.Item>Settings</Dropdown.Item>
+                        <Dropdown.Item onClick={() => setIsSettings(true)}>
+                          Settings
+                        </Dropdown.Item>
                         <Dropdown.Item href="#/action-3">Log out</Dropdown.Item>
                       </Dropdown.Menu>
                     </Dropdown>
@@ -104,7 +107,10 @@ const HomePage = () => {
                 users.map((user, index) => {
                   return (
                     <div
-                      onClick={() => setIsChatClosed(false)}
+                      onClick={() => {
+                        setIsChatClosed(false);
+                        setOpenChat(user);
+                      }}
                       key={index}
                       className="chat-list-bar d-flex justify-content-between py-2 px-3"
                     >
@@ -166,9 +172,9 @@ const HomePage = () => {
                     </div>
                   );
                 })}
-              {/* <MySettings /> */}
             </div>
           )}
+          {isSettings && <MySettings isSettings={handleSettings} user={Me} />}
           <div className={`my-profile ${isProfile ? "show" : ""}`}>
             <div className="user-bar d-flex  py-3 px-3 align-items-center">
               <Icon.ArrowLeft onClick={() => setIsProfile(false)} size={30} />
@@ -450,6 +456,7 @@ const HomePage = () => {
             <ChatRoom
               handleSearch={handleSearch}
               handleClosedChat={handleClosedChat}
+              chat={openChat}
             />
           )}
           <div className={`search-messages ${isSearch ? "show" : ""}`}>
