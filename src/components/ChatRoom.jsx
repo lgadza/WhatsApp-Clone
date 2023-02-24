@@ -80,10 +80,13 @@ const ChatRoom = ({
       text: message,
       createdAt: new Date().toLocaleString("en-US"),
     };
-    socket.emit("sendMessage", { message: newMessage });
-    setChatHistory([...chatHistory, newMessage]);
+    socket.emit("privateMessage", {
+      content: message,
+      receiver: chat._id,
+      createdAt: new Date().toLocaleString("en-US"),
+    });
+    setChatHistory([...chatHistory, message]);
   };
-  console.log(chatHistory, "HISTROrY");
 
   return (
     <div>
@@ -215,12 +218,12 @@ const ChatRoom = ({
           );
         })}
         {chatHistory.length > 0 &&
-          chatHistory.map((content, index) => {
+          chatHistory.map((text, index) => {
             console.log(content, "CONTNET");
             return (
               <div key={index} className="d-flex justify-content-end">
                 <span className=" my-chat mt-2 mx-5 px-2 py-2 d-flex ">
-                  <span>{content.content.text}</span>
+                  <span>{text}</span>
 
                   <span className="text-time d-flex justify-content-end pt-2 ml-2">
                     <span>20:50</span>
@@ -242,15 +245,15 @@ const ChatRoom = ({
                             Forward message
                           </Dropdown.Item>
                           <Dropdown.Item
-                            onClick={() => {
-                              dispatch(
-                                deleteMessage(
-                                  chat._id,
-                                  (content.content = "2323"),
-                                  accessToken
-                                )
-                              );
-                            }}
+                            // onClick={() => {
+                            //   dispatch(
+                            //     deleteMessage(
+                            //       chat._id,
+                            //       (content.content = "2323"),
+                            //       accessToken
+                            //     )
+                            //   );
+                            // }}
                             className="py-3"
                           >
                             Delete message
@@ -328,8 +331,8 @@ const ChatRoom = ({
           {message && (
             <Icon.Send
               onClick={() => {
-                // sendMessage();
                 dispatch(postMessage(content, accessToken, chatId));
+                sendMessage();
                 setMessage("");
               }}
               className="send-icon p-1"

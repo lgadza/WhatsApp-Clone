@@ -46,10 +46,11 @@ const SignIn = ({ signUp }) => {
     await dispatch(signIn(loginFormData));
     setSign_in(true);
   };
+  console.log(signInCredentials);
   if (signInCredentials.accessToken) {
     // socket.on("setUsername",{});
     dispatch(getMe(signInCredentials.accessToken));
-    socket.emit("setUsername", { username: email });
+    socket.emit("setUsername", { username: signInCredentials._id });
     if (!isGetMeLoading) {
       navigate("/chats");
     }
