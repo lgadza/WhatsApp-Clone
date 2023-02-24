@@ -10,13 +10,18 @@ import ClosedChat from "../components/ClosedChat";
 import MySettings from "../components/MySettings";
 import { useDispatch, useSelector } from "react-redux";
 import {
+  createChat,
   deleteUser,
+  getAllChats,
   getAllMessagesChat,
   getMe,
   getUsers,
   logout,
 } from "../redux/actions";
-
+import { io } from "socket.io-client";
+const socket = io(process.env.REACT_APP_BE_DEV_URL, {
+  transports: ["websocket"],
+});
 const HomePage = () => {
   const Me = useSelector((state) => state.me.me);
   const dispatch = useDispatch();
@@ -24,9 +29,12 @@ const HomePage = () => {
   const registrationResponse = useSelector(
     (state) => state.registerUser.registrationResponse
   );
+
   const accessToken = useSelector((state) => state.accessToken.accessToken);
   const navigate = useNavigate();
   const myChats = useSelector((state) => state.createdChat.chat);
+  const allMyChats = useSelector((state) => state.allChats.chats);
+
   // ****************STATES*****************
   const [name, setName] = useState(Me.name);
   const [userId, setUserId] = useState("");
@@ -37,9 +45,9 @@ const HomePage = () => {
   const [isSettings, setIsSettings] = useState(false);
   const [isProfile, setIsProfile] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [chatId, setChatId] = useState("");
   const [isChatClosed, setIsChatClosed] = useState(true);
   const [isEditingAbout, setIsEditingAbout] = useState(false);
-
   // ****************STATE HANDLES*****************
   // ****************STATE HANDLES*****************
   const handleSearch = () => {
@@ -59,15 +67,19 @@ const HomePage = () => {
     navigate("/");
   };
   useEffect(() => {
-    dispatch(
-      getUsers(registrationResponse.accessToken || accessToken.accessToken)
-    );
-    dispatch(
-      getMe(registrationResponse.accessToken || accessToken.accessToken)
-    );
+    socket.on("welcome", (welcomeMessage) => {
+      console.log(welcomeMessage);
+    });
+  });
+
+  useEffect(() => {
+    dispatch(getUsers(accessToken.accessToken));
+    dispatch(getMe(accessToken.accessToken));
+    dispatch(getAllChats(accessToken.accessToken));
   }, []);
   const users = allChats.filter((chat) => chat.name.includes(searchChat));
   console.log(searchChat);
+  console.log(allMyChats, "ALL CHATS");
   return (
     <Container fluid className="home-page">
       <Row>
@@ -121,20 +133,20 @@ const HomePage = () => {
                   <Icon.Search size={20} className="search-icon" />
                 </Form.Group>
               </div>
-              {/* {users.length > 0 &&
-                users.map((user, index) => {
+
+              {allMyChats.length > 0 &&
+                allMyChats.map((chat, index) => {
+                  const reciever = chat.members[1];
+                  console.log("RECIEVE", chat);
                   return (
                     <div
                       onClick={() => {
                         setIsChatClosed(false);
                         dispatch(
-                          getAllMessagesChat(
-                            user._id,
-                            accessToken.accessToken ||
-                              registrationResponse.accessToken
-                          )
+                          getAllMessagesChat(chat._id, accessToken.accessToken)
                         );
-                        setOpenChat(user);
+                        setChatId(chat._id);
+                        setOpenChat(reciever);
                       }}
                       key={index}
                       className="chat-list-bar d-flex justify-content-between py-2 px-3"
@@ -149,7 +161,9 @@ const HomePage = () => {
                           alt="me"
                         />
                         <div className="ml-4">
-                          <div className="d-flex user-name">{user.name}</div>
+                          <div className="d-flex user-name">
+                            {reciever.name}
+                          </div>
                           <div className="d-flex">
                             <span className="ml-1">
                               <Icon.CheckAll
@@ -170,83 +184,7 @@ const HomePage = () => {
                             <Dropdown.Toggle>
                               <Icon.CaretDown
                                 onClick={() => {
-                                  setUserId(user._id);
-                                }}
-                                size={20}
-                              />
-                            </Dropdown.Toggle>
-
-                            <Dropdown.Menu>
-                              <Dropdown.Item className="py-3">
-                                Archive
-                              </Dropdown.Item>
-
-                              <Dropdown.Item className="py-3">
-                                Pin chat
-                              </Dropdown.Item>
-                              <Dropdown.Item
-                                onClick={handleDeleteUser}
-                                className="py-3"
-                              >
-                                Delete chat
-                              </Dropdown.Item>
-                            </Dropdown.Menu>
-                          </Dropdown>
-                        </div>
-                      </div>
-                    </div>
-                  );
-                })} */}
-              {myChats > 0 &&
-                myChats.map((user, index) => {
-                  return (
-                    <div
-                      onClick={() => {
-                        setIsChatClosed(false);
-                        dispatch(
-                          getAllMessagesChat(
-                            user._id,
-                            accessToken.accessToken ||
-                              registrationResponse.accessToken
-                          )
-                        );
-                        setOpenChat(user);
-                      }}
-                      key={index}
-                      className="chat-list-bar d-flex justify-content-between py-2 px-3"
-                    >
-                      <div className="d-flex">
-                        <Avatar
-                          src={
-                            "https://www.maxpixel.net/static/photo/640/Icon-Avatar-Person-Business-Male-Profile-User-5359553.png"
-                          }
-                          width={50}
-                          height={50}
-                          alt="me"
-                        />
-                        <div className="ml-4">
-                          <div className="d-flex user-name">{user.name}</div>
-                          <div className="d-flex">
-                            <span className="ml-1">
-                              <Icon.CheckAll
-                                size={20}
-                                color="rgb(83, 189, 235)"
-                              />
-                            </span>
-                            <span>Hey man</span>
-                          </div>
-                        </div>
-                      </div>
-                      <div className="ml-3 text-time">
-                        <div className="mr-auto">Yesterday</div>
-                        <div>
-                          <div className="messages-notifications">24</div>
-
-                          <Dropdown className="text-option">
-                            <Dropdown.Toggle>
-                              <Icon.CaretDown
-                                onClick={() => {
-                                  setUserId(user._id);
+                                  setUserId(reciever._id);
                                 }}
                                 size={20}
                               />
@@ -286,6 +224,19 @@ const HomePage = () => {
                         chat._id,
                         accessToken.accessToken ||
                           registrationResponse.accessToken
+                      )
+                    );
+                    dispatch(
+                      createChat(
+                        chat._id,
+                        accessToken.accessToken ||
+                          registrationResponse.accessToken
+                      )
+                    );
+                    dispatch(
+                      getAllChats(
+                        registrationResponse.accessToken ||
+                          accessToken.accessToken
                       )
                     );
                     setOpenChat(chat);
@@ -433,6 +384,7 @@ const HomePage = () => {
                   : registrationResponse.accessToken
               }
               senderName={Me.name}
+              chatId={chatId}
             />
           )}
           <div className={`search-messages ${isSearch ? "show" : ""}`}>

@@ -18,6 +18,7 @@ import registerUser from "../reducers/registerUser";
 import getMe from "../reducers/meReducer";
 import adminSignInToken from "../reducers/adminLogin";
 import createChat from "../reducers/createChat";
+import getAllChats from "../reducers/getALLChats";
 
 const persistConfig = {
   key: "root",
@@ -41,6 +42,7 @@ const bigReducer = combineReducers({
   me: getMe,
   adminToken: adminSignInToken,
   createdChat: createChat,
+  allChats: getAllChats,
 });
 
 const persistedReducer = persistReducer(persistConfig, bigReducer);

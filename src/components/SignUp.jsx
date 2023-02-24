@@ -54,7 +54,7 @@ const SignUp = ({ signIn }) => {
     await setResponse(true);
 
     await dispatch(getMe(registrationResponse.accessToken));
-    navigate("/chats");
+    // navigate("/chats");
   };
 
   return (

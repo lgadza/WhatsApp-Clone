@@ -9,7 +9,9 @@ export const REGISTER_USER_ERROR = "REGISTER_USER_ERROR";
 export const GET_ME = "GET_ME";
 export const GET_ME_LOADING = "GET_ME_LOADING";
 export const GET_ME_ERROR = "GET_ME_ERROR";
-
+export const GET_ALL_CHAT = "GET_ALL_CHAT";
+export const GET_ALL_CHAT_LOADING = "GET_ALL_CHAT_LOADING";
+export const GET_ALL_CHAT_ERROR = "GET_ALL_CHAT_ERROR";
 export const GET_LOGIN_ACCESSTOKEN = "GET_LOGIN_ACCESSTOKEN";
 export const GET_LOGIN_ACCESSTOKEN_LOADING = "GET_LOGIN_ACCESSTOKEN_LOADING";
 export const GET_LOGIN_ACCESSTOKEN_ERROR = "GET_LOGIN_ACCESSTOKEN_ERROR";
@@ -136,17 +138,17 @@ export const createChat = (data, accessToken) => {
         "Content-Type": "application/json",
         Authorization: `Bearer ${accessToken}`,
       },
-      body: JSON.stringify(data),
+      body: JSON.stringify({ receiver: [data] }),
     };
     const URL = process.env.REACT_APP_BE_DEV_URL;
     try {
       const response = await fetch(`${URL}/chats/me/chats`, options);
       if (response.ok) {
         const chat = await response.json();
-        getUsers(`${URL}/users?limit=10`);
+        console.log(chat);
 
         dispatch({
-          type: POST_MESSAGES,
+          type: CREATE_CHAT,
           payload: chat,
         });
       }
@@ -463,6 +465,59 @@ export const getUsers = (accessToken) => {
     }
   };
 };
+export const getAllChats = (accessToken) => {
+  return async (dispatch) => {
+    // const URL = process.env.REACT_APP_BE_PROD_URL;
+    const URL = process.env.REACT_APP_BE_DEV_URL;
+    const options = {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${accessToken}`,
+      },
+    };
+
+    try {
+      let response = await fetch(`${URL}/chats/me/chats`, options);
+      if (response.ok) {
+        const allChats = await response.json();
+        dispatch({
+          type: GET_ALL_CHAT,
+          payload: allChats,
+        });
+        setTimeout(() => {
+          dispatch({
+            type: GET_ALL_CHAT_LOADING,
+            payload: false,
+          });
+        }, 100);
+      } else {
+        console.log("error");
+
+        dispatch({
+          type: GET_ALL_CHAT_LOADING,
+          payload: false,
+        });
+        dispatch({
+          type: GET_ALL_CHAT_ERROR,
+          payload: true,
+        });
+      }
+    } catch (error) {
+      console.log(error);
+
+      dispatch({
+        type: GET_ALL_CHAT_LOADING,
+        payload: false,
+      });
+
+      dispatch({
+        type: GET_ALL_CHAT_ERROR,
+        payload: true,
+      });
+    }
+  };
+};
+
 export const getMe = (accessToken) => {
   return async (dispatch) => {
     const options = {

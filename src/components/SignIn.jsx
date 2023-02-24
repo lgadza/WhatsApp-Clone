@@ -13,7 +13,10 @@ import { useState, useEffect } from "react";
 import { signIn, getMe } from "../redux/actions/index";
 import * as Icon from "react-bootstrap-icons";
 import Spinners from "../components/Spinner";
-
+import { io } from "socket.io-client";
+const socket = io(process.env.REACT_APP_BE_DEV_URL, {
+  transports: ["websocket"],
+});
 const SignIn = ({ signUp }) => {
   const dispatch = useDispatch();
 
@@ -44,8 +47,9 @@ const SignIn = ({ signUp }) => {
     setSign_in(true);
   };
   if (signInCredentials.accessToken) {
+    // socket.on("setUsername",{});
     dispatch(getMe(signInCredentials.accessToken));
-
+    socket.emit("setUsername", { username: email });
     if (!isGetMeLoading) {
       navigate("/chats");
     }
